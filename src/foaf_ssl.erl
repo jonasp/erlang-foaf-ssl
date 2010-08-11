@@ -26,7 +26,13 @@ verify_user(Cert) ->
   Result = port:exec(Cmd),
   {_M, _E, RdfMod, RdfExp} = parse_output(Result),
   
-  {RdfMod, RdfExp} == {CertMod, CertExp}.
+  if
+    {RdfMod, RdfExp} == {CertMod, CertExp} ->
+      {ok, URI};
+    _E ->
+      {error, eauthfailed}
+  end.
+    
 
 parse_output(Output) -> 
   RdfMPos = string:str(Output, "m="),
